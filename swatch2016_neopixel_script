@@ -66,12 +66,16 @@ void loop() {
       if ( PB1_blink == 0 ){
         digitalWrite(PB1, HIGH);   // turn the LED on (HIGH is the voltage level)
         PB1_blink = 1;
-        //  pixels.setPixelColor(0, pixels.Color(155,0,0 ));
+        pixels.setPixelColor(0, pixels.Color(155,0,0 ));  pixels.show();
+        delay(100);
+          pixels.setPixelColor(0, pixels.Color(0,0,0 ));  pixels.show();
       }
       else{
         digitalWrite(PB1, LOW);    // turn the LED off by making the voltage LOW
         PB1_blink = 0;
-        //  pixels.setPixelColor(0, pixels.Color(0,155,0 ));
+            pixels.setPixelColor(0, pixels.Color(0,0,155 ));  pixels.show();
+        delay(100);
+          pixels.setPixelColor(0, pixels.Color(0,0,0 ));  pixels.show();
       }
       timer = millis()+1000;
       timerCounter++;
@@ -123,6 +127,8 @@ void callibrate(){
   if ( r1 > adc3MAX ) adc3MAX = r1;
 
 }
+
+
 
 
 
