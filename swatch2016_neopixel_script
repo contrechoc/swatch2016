@@ -1,0 +1,128 @@
+/*
+
+script for the e-textile swatchbook swatch 
+title Epaulette
+author Beam
+2016
+feel free to do whatever your want with the script
+
+on three analog pins of the ATTINY are textile resistive yarn patches
+the  minimum and maximum values are calibrated automatically during the first seconds
+during the calibration you have to press the patches
+then the values are mapped to the RGB Neopixel
+
+example of mapping 3D data to a RGB LED - datavisualisation
+
+http://etextile-summercamp.org/swatch-exchange/epaulette/
+
+*/
+
+#include <Adafruit_NeoPixel.h>
+#include <avr/power.h>
+
+long timer = 0;
+char PB1_blink = 0;
+char callibrationMode = 1;
+char timerCounter = 0;
+
+#define ADC1 PB1
+#define ADC2 PB4
+#define ADC3 PB3
+
+
+int adc1MIN = 1024;
+int adc2MIN = 1024;
+int adc3MIN = 1024;
+
+int adc1MAX = 0;
+int adc2MAX = 0;
+int adc3MAX = 0;
+
+#define PIN            PB0
+#define NUMPIXELS      1
+
+Adafruit_NeoPixel pixels = Adafruit_NeoPixel(NUMPIXELS, PIN, NEO_GRB + NEO_KHZ800);
+
+
+// the setup routine runs once when you press reset:
+void setup() {                
+  // initialize the digital pin as an output.
+  pinMode(PB0, OUTPUT);     
+  pinMode(PB1, OUTPUT);  
+
+  digitalWrite(PB1, HIGH);
+  delay(1000);
+  digitalWrite(PB1, LOW);
+  pixels.begin();
+    pixels.setPixelColor(0, pixels.Color(0,0,0 ));
+    pixels.show();
+}
+
+// the loop routine runs over and over again forever:
+void loop() {
+  if ( callibrationMode == 1){
+    callibrate();
+    if ( timer < millis()){
+      if ( PB1_blink == 0 ){
+        digitalWrite(PB1, HIGH);   // turn the LED on (HIGH is the voltage level)
+        PB1_blink = 1;
+        //  pixels.setPixelColor(0, pixels.Color(155,0,0 ));
+      }
+      else{
+        digitalWrite(PB1, LOW);    // turn the LED off by making the voltage LOW
+        PB1_blink = 0;
+        //  pixels.setPixelColor(0, pixels.Color(0,155,0 ));
+      }
+      timer = millis()+1000;
+      timerCounter++;
+      if ( timerCounter > 10 ) {
+        callibrationMode = 0;
+        digitalWrite(PB1, HIGH);
+        delay(200);
+        digitalWrite(PB1, LOW);
+        delay(200);
+        digitalWrite(PB1, HIGH);
+        delay(200);
+        digitalWrite(PB1, LOW);
+        delay(200);
+        digitalWrite(PB1, HIGH);
+        delay(200);
+        digitalWrite(PB1, LOW);
+        delay(200);
+      }
+    }
+  }
+
+  if ( callibrationMode == 0){
+  int r1 = map ( analogRead( ADC1), adc2MIN, adc2MAX, 0, 200 );
+  int r2 = map ( analogRead( ADC2), adc2MIN, adc2MAX, 0, 200 );
+  int r3 = map ( analogRead( ADC3), adc3MIN, adc3MAX, 0, 200 );
+  pixels.setPixelColor(0, pixels.Color(r1,r2,r3 ));
+  pixels.show();
+  delay(1000);
+
+  if (   (timerCounter++)%10 == 0 ){
+    pixels.setPixelColor(0, pixels.Color(0,0,0 ));
+    pixels.show();
+    delay(100);
+  }
+
+  callibrate();
+  }
+}
+
+void callibrate(){
+  int r1 = analogRead( ADC1);
+  if ( r1 < adc1MIN ) adc1MIN = r1;
+  if ( r1 > adc1MAX ) adc1MAX = r1;
+  r1 = analogRead( ADC2);
+  if ( r1 < adc2MIN ) adc2MIN = r1;
+  if ( r1 > adc2MAX ) adc2MAX = r1;
+  r1 = analogRead( ADC3);
+  if ( r1 < adc3MIN ) adc3MIN = r1;
+  if ( r1 > adc3MAX ) adc3MAX = r1;
+
+}
+
+
+
