@@ -31,4 +31,4 @@ http://etextile-summercamp.org/swatch-exchange/epaulette/
 
 2: using random values to generate color patterns
 
-
+using analogRead from pins PB1 and PB2 to get "more" random values, even acting as some sort of capacitive influence
