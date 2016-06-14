@@ -1,6 +1,10 @@
 # swatch2016
 Script of E-textile Swatch2015
 
+two scripts
+
+1: with conductive patches
+
 uses: ATtiny85, neopixel
 3 conductive textile patches
 
@@ -24,3 +28,7 @@ example of mapping 3D data to a RGB LED - datavisualisation
 http://etextile-summercamp.org/swatch-exchange/epaulette/
 
 */
+
+2: using random values to generate color patterns
+
+
